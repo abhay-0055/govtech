@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GovTech — Citizen Service Requests & Fees
 
-## Getting Started
+## Tech Stack
+- **Frontend/Backend**: Next.js 14+ (App Router, TypeScript)
+- **Database**: Supabase (PostgreSQL)
+- **ORM**: Prisma 6
+- **Auth**: Custom JWT (Access + Refresh tokens)
+- **Styling**: Tailwind CSS
 
-First, run the development server:
+## Prerequisites
+- Node.js 20.19+
+- A Supabase project (free tier works)
 
+## Setup
+
+### 1. Clone & install
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <your-repo-url>
+cd govtech
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Configure environment
+```bash
+cp .env.example .env
+```
+Fill in `.env`:
+- `DATABASE_URL` — from Supabase: Dashboard → Project → Settings → Database → URI
+- `JWT_ACCESS_SECRET` — random 64-byte hex string
+- `JWT_REFRESH_SECRET` — random 64-byte hex string
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Generate secrets quickly:
+```bash
+node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Generate Prisma client
+```bash
+npm run db:generate
+```
 
-## Learn More
+### 4. Run migrations (after schema is ready — Phase 1-02)
+```bash
+npm run db:migrate
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 5. Start dev server
+```bash
+npm run dev
+```
+App: http://localhost:3000  
+Health check: http://localhost:3000/api/health
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Environment Variables
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Variable | Description |
+|---|---|
+| `DATABASE_URL` | Supabase PostgreSQL connection URI |
+| `JWT_ACCESS_SECRET` | Secret for signing access tokens (TTL: 15min) |
+| `JWT_REFRESH_SECRET` | Secret for signing refresh tokens (TTL: 7 days) |
+| `NEXT_PUBLIC_APP_URL` | App base URL |
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Evidence
+See [Evidence.md](./Evidence.md)
