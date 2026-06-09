@@ -17,7 +17,10 @@ export async function POST(req: NextRequest) {
   }
 
   const res = NextResponse.json({ message: "Logged out" });
-  const clear = { httpOnly: true, secure: true, sameSite: "strict" as const, path: "/", maxAge: 0 };
+
+  const isProd = process.env.NODE_ENV === "production";
+
+  const clear = { httpOnly: true, secure: isProd, sameSite: "strict" as const, path: "/", maxAge: 0 };
   res.cookies.set("access_token", "", clear);
   res.cookies.set("refresh_token", "", clear);
   return res;

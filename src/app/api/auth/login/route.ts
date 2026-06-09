@@ -38,7 +38,9 @@ export async function POST(req: NextRequest) {
       user: { id: user.userId, name: user.name, email: user.email, role: user.role.roleName },
     });
 
-    const cookieOpts = { httpOnly: true, secure: true, sameSite: "strict" as const, path: "/" };
+    const isProd = process.env.NODE_ENV === "production";
+
+    const cookieOpts = { httpOnly: true, secure: isProd, sameSite: "strict" as const, path: "/" };
     res.cookies.set("access_token", accessToken, { ...cookieOpts, maxAge: 60 * 15 });
     res.cookies.set("refresh_token", refreshToken, { ...cookieOpts, maxAge: 60 * 60 * 24 * 7 });
 

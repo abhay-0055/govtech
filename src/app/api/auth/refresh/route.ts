@@ -27,7 +27,10 @@ export async function POST(req: NextRequest) {
     );
 
     const res = NextResponse.json({ message: "Tokens refreshed" });
-    const cookieOpts = { httpOnly: true, secure: true, sameSite: "strict" as const, path: "/" };
+
+    const isProd = process.env.NODE_ENV === "production";
+
+    const cookieOpts = { httpOnly: true, secure: isProd, sameSite: "strict" as const, path: "/" };
     res.cookies.set("access_token", newAccessToken, { ...cookieOpts, maxAge: 60 * 15 });
     res.cookies.set("refresh_token", newRefreshToken, { ...cookieOpts, maxAge: 60 * 60 * 24 * 7 });
 
